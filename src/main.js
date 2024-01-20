@@ -26,28 +26,28 @@ async function useSubmit(event) {
   page = 1;
   gallery.innerHTML = '';
   userSearch = form.search.value.trim();
+
+  btnLoadMore.classList.add('hide');
+  const images = await fetchImages();
+
+  if (images.hits.length === 0) {
+    iziToast.error({
+      position: 'topRight',
+      message:
+        'Sorry, there are no images matching your search query. Please try again!',
+    });
+  } else if (images.hits.length < per_page) {
+    iziToast.error({
+      position: 'topRight',
+      message: "We're sorry, but you've reached the end of search results.",
+    });
+  } else {
+    btnLoadMore.classList.remove('hide');
+  }
+
+  form.reset();
+  reproduceImages(images);
 }
-
-btnLoadMore.classList.add('hide');
-const images = await fetchImages();
-
-if (images.hits.length === 0) {
-  iziToast.error({
-    position: 'topRight',
-    message:
-      'Sorry, there are no images matching your search query. Please try again!',
-  });
-} else if (images.hits.length < per_page) {
-  iziToast.error({
-    position: 'topRight',
-    message: "We're sorry, but you've reached the end of search results.",
-  });
-} else {
-  btnLoadMore.classList.remove('hide');
-}
-
-form.reset();
-reproduceImages(images);
 
 async function useLoadMore() {
   page += 1;
